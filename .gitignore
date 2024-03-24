@@ -1,0 +1,9 @@
+datasets/
+raw_data/
+runs
+tmp
+venv
+yolov8n.pt
+model/*.png
+model/*.jpg
+*.pyc
