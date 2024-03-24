@@ -7,3 +7,4 @@ yolov8n.pt
 model/*.png
 model/*.jpg
 *.pyc
+*.zip

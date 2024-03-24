@@ -1,5 +1,5 @@
-BROKER_SERVER_1 = "localhost:9092"
-BROKER_SERVER_2 = "localhost:9095"
+BROKER_SERVER_1 = "localhost:9094"
+BROKER_SERVER_2 = "localhost:9097"
 
 TOPIC_DATA = "data_topic"
 TOPIC_DATA_PROCESSED = "processed_data"

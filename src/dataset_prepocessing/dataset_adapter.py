@@ -8,7 +8,7 @@ from collections import defaultdict, Counter
 import cv2
 from networkx import NodeNotFound
 from tqdm import tqdm
-from src.dataset_prepocessing.lookupTable import LookupTable
+from lookupTable import LookupTable
 
 DatasetIndex = Dict[str, Dict[str, List[str]]]
 DatasetStats = Dict[str, int]

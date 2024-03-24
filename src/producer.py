@@ -3,6 +3,7 @@ import time
 from confluent_kafka import Producer
 import os, random
 import argparse
+from constants import TOPIC_DATA
 
 parser = argparse.ArgumentParser(description="Kafka producer")
 
@@ -10,11 +11,11 @@ parser.add_argument(
     "-s",
     "--server_port",
     type=int,
-    default=9095,
+    default=9094,
     help="Bootstrap server port",
 )
 parser.add_argument(
-    "-t", "--topic", type=str, default="animals_topic", help="Name of Kafka topic"
+    "-t", "--topic", type=str, default=TOPIC_DATA, help="Name of Kafka topic"
 )
 parser.add_argument(
     "-p",

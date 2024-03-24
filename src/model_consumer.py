@@ -10,7 +10,6 @@ from constants import (
     TOPIC_DATA_PROCESSED,
     TOPIC_MODEL_RESULT,
 )
-from utils import get_boxes
 import torchvision.ops.boxes as bops
 import base64
 
@@ -27,11 +26,11 @@ consumer = Consumer(conf)
 consumer.subscribe([consumer_topic])
 
 producer = Producer(
-    {"bootstrap_servers": bootstrap_servers_producer, "topic": producer_topic}
+    {"bootstrap.servers": bootstrap_servers_producer}
 )
 
 
-model = YOLO(MODEL_PATH, task="detection")
+model = YOLO(MODEL_PATH, task="detect")
 
 
 def preprocess_data():
@@ -41,19 +40,16 @@ def preprocess_data():
             data = None
             try:
                 data = json.loads(msg.value().decode("utf-8"))
-                result = model(data.image)
+                result = model(data['image'])[0]
+                result_boxes = result.boxes.xyxyn
+                drawing_boxes = result.boxes.xyxy.cpu().tolist()
 
-                result_boxes = [i.boxes.xyxyn for i in result]
-                iou = bops.box_iou(torch.Tensor(result_boxes), torch.Tensor(data.boxes))
+                iou = bops.box_iou(torch.Tensor(result_boxes).cuda(), torch.Tensor(data['boxes']).cuda())
 
-                result_images = []
-
-                for res in result:
-                    with open(res.path, "rb") as image_file:
-                        encoded_string = base64.b64encode(image_file.read())
-                    result_images.push(encoded_string)
-
-                model_result = {"result_images": result_images, "iou": iou}
+                with open(result.path, "rb") as image_file:
+                    result_image = str(base64.b64encode(image_file.read()))
+                
+                model_result = {"image": result_image, "iou": iou.cpu().tolist(), "drawing_boxes":drawing_boxes}
 
                 producer.produce(
                     producer_topic, key="1", value=json.dumps(model_result)
